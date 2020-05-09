@@ -1,0 +1,45 @@
+test1: n:100 m:100
+The number of bridges:32 Used Time:0.024ms
+test2: n:200 m:200
+The number of bridges:74 Used Time:0.037ms
+test3: n:200 m:400
+The number of bridges:17 Used Time:0.041ms
+test4: n:800 m:800
+The number of bridges:285 Used Time:0.142ms
+test5: n:1000 m:1000
+The number of bridges:372 Used Time:0.438ms
+test6: n:1000 m:2000
+The number of bridges:95 Used Time:0.219ms
+test7: n:1000 m:4000
+The number of bridges:6 Used Time:0.223ms
+test8: n:1000 m:8000
+The number of bridges:0 Used Time:0.271ms
+test9: n:1000 m:10000
+The number of bridges:0 Used Time:0.300ms
+test10: n:100000 m:100000
+The number of bridges:36352 Used Time:40.063ms
+test11: n:1000000 m:1000000
+The number of bridges:365250 Used Time:644.881ms
+test12: n:10000 m:10000
+The number of bridges:3649 Used Time:1.804ms
+
+--------------------------------
+Process exited after 3.211 seconds with return value 0
+请按任意键继续. . .
+
+//big
+n:1000000 m:7586063
+over
+The number of bridges:8 Used Time:784.884ms
+Bridge 1: 95760--773903
+Bridge 2: 148837--372243
+Bridge 3: 317390--589095
+Bridge 4: 461822--548437
+Bridge 5: 467595--630627
+Bridge 6: 467595--907820
+Bridge 7: 639238--969090
+Bridge 8: 658123--724640
+
+--------------------------------
+Process exited after 6.726 seconds with return value 0
+请按任意键继续. . .
