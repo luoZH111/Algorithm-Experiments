@@ -1,0 +1,49 @@
+N:100000
+p(524818.16,663017.36) to p(524820.52,663013.21)   Dis:2.1850      time(violence):14377.0648ms
+To calculate the shortest distance of 100000 points.
+The average time of violence is 14377.0648ms
+
+N:200000
+p(511815.24,310898.73) to p(511818.05,310903.83)   Dis:2.4131      time(violence):57472.7402ms
+To calculate the shortest distance of 200000 points.
+The average time of violence is 57472.7402ms
+
+N:300000
+p(416198.08,77839.54) to p(416204.05,77841.55)   Dis:2.5098      time(violence):130410.4858ms
+To calculate the shortest distance of 300000 points.
+The average time of violence is 130410.4858ms
+
+N:400000
+p(128595.47,203773.17) to p(128598.82,203768.69)   Dis:2.3652      time(violence):232165.1610ms
+To calculate the shortest distance of 400000 points.
+The average time of violence is 232165.1610ms
+
+N:500000
+p(295297.35,94099.14) to p(295301.62,94101.32)   Dis:2.1896      time(violence):362072.0320ms
+To calculate the shortest distance of 500000 points.
+The average time of violence is 362072.0320ms
+
+N:600000
+p(25376.50,609466.28) to p(25378.85,609462.80)   Dis:2.0492      time(violence):519969.4208ms
+To calculate the shortest distance of 600000 points.
+The average time of violence is 519969.4208ms
+
+N:700000
+p(948267.60,28672.69) to p(948269.96,28668.54)   Dis:2.1850      time(violence):715216.8294ms
+To calculate the shortest distance of 700000 points.
+The average time of violence is 715216.8294ms
+
+N:800000
+p(282761.75,554791.70) to p(282764.11,554787.22)   Dis:2.2502      time(violence):923237.5556ms
+To calculate the shortest distance of 800000 points.
+The average time of violence is 923237.5556ms
+
+N:900000
+p(272874.65,85614.45) to p(272875.09,85612.38)   Dis:1.4547      time(violence):1171926.0918ms
+To calculate the shortest distance of 900000 points.
+The average time of violence is 1171926.0918ms
+
+N:1000000
+p(959587.25,754127.26) to p(959588.68,754125.19)   Dis:1.5862      time(violence):1453595.0650ms
+To calculate the shortest distance of 1000000 points.
+The average time of violence is 1453595.0650ms

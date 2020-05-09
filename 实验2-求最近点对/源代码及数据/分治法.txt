@@ -1,0 +1,39 @@
+N:100000
+To calculate the shortest distance of 100000 points.
+The average time of divide_conquer is 37.4258ms
+
+N:200000
+To calculate the shortest distance of 200000 points.
+The average time of divide_conquer is 76.6292ms
+
+N:300000
+To calculate the shortest distance of 300000 points.
+The average time of divide_conquer is 124.9979ms
+
+N:400000
+To calculate the shortest distance of 400000 points.
+The average time of divide_conquer is 171.3731ms
+
+N:500000
+To calculate the shortest distance of 500000 points.
+The average time of divide_conquer is 231.5744ms
+
+N:600000
+To calculate the shortest distance of 600000 points.
+The average time of divide_conquer is 261.6017ms
+
+N:700000
+To calculate the shortest distance of 700000 points.
+The average time of divide_conquer is 333.5349ms
+
+N:800000
+To calculate the shortest distance of 800000 points.
+The average time of divide_conquer is 372.2594ms
+
+N:900000
+To calculate the shortest distance of 900000 points.
+The average time of divide_conquer is 425.3462ms
+
+N:1000000
+To calculate the shortest distance of 1000000 points.
+The average time of divide_conquer is 473.0780ms
