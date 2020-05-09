@@ -1,0 +1,258 @@
+#include<iostream>
+#include<ctime>
+#include<stdlib.h>
+using namespace std;
+void SelectSort(int a[],int n)//选择
+{
+	int i,j,min,temp;
+	for(i=0;i<n;i++)
+	{
+		min=i;
+		for(j=i+1;j<n;j++)
+		{
+			if(a[j]<a[min])
+			{
+				min=j;
+			}
+		}
+		if(min!=i)
+		{
+			temp=a[min];
+			a[min]=a[i];
+			a[i]=temp;
+		}
+	}
+}
+void KPai(int a[],int left,int right)
+{
+	int p=a[right],l=left,r=right;
+    while(l<r)
+	{
+		swap(a[l],a[r]);
+		while(l<r&&a[r]>p) --r;
+	    while(l<r&&a[l]<=p) ++l;
+	}
+	swap(a[left],a[r]);
+	if(left<r-1)KPai(a,left,r-1);
+	if(r+1<right) KPai(a,r+1,right);
+}
+void hebing(int a[],int tou, int mid, int wei, int temp[])
+{
+ int i = tou, n = mid;
+ int j = mid + 1, m = wei;
+ int k = 0;
+
+ while (i <= n&&j <= m)
+ {
+  if (a[i] < a[j])
+   temp[k++] = a[i++];
+  else
+   temp[k++] = a[j++];
+ }
+
+ while (i <= n)
+ {
+  temp[k++] = a[i++];
+ }
+
+ while (j <= m)
+  temp[k++] = a[j++];
+
+ for (i = 0; i < k; i++)
+  a[tou + i] = temp[i];
+}
+
+// 先递归地分解数列，再合并数列完成归并排序
+void hebingSection(int a[], int tou, int wei, int temp[])
+{
+ if (tou < wei)
+ {
+  int mid = (tou + wei) / 2;
+  hebingSection(a, tou, mid, temp);  // 左边有序
+  hebingSection(a, mid + 1, wei, temp); // 右边有序
+  hebing(a, tou, mid, wei, temp); // 合并两个有序序列
+ }
+}
+
+void hebingsort(int a[], int n)
+{
+ int *p = new int[n];
+ if (p == NULL)
+  return;
+ hebingSection(a, 0, n-1, p);
+ delete[] p;
+}
+
+
+void maopao(int a[],int n)
+{
+	int i,j,temp;
+	for(i=1;i<n;i++)
+	{
+		for(j=0;j<n-i;j++)
+		{
+			if(a[j]>a[j+1])
+			{
+			  int temp=a[j];
+			  a[j]=a[j+1];
+			  a[j+1]=temp;
+			}
+		}
+	}
+}
+
+void charu(int a[],int n)
+{
+	int i,j,temp;
+	for(i=1;i<n;i++)
+	{
+		temp=a[i];
+		j=i-1;
+		while(j>=0&&temp<a[j])
+		{
+			a[j+1]=a[j];
+			j--;
+		}
+		a[j+1]=temp;
+	}
+}
+
+void show(int a[],int len)
+{
+	int i;
+	for(i=0;i<len;i++)
+	{
+		cout<<a[i]<<" ";
+		
+	}
+	cout<<endl;
+}
+int main()
+{
+	int n;
+	cout<<"输入数组大小：";
+	cin>>n;
+	cout<<endl;
+	int *a=new int[n];	
+	srand((unsigned)time(NULL));//rand产生的随机数每次运行都相同，不同就要用srand（）函数对其初始化
+//选择排序
+	clock_t start,end;
+	start=clock();
+	for(int i = 0; i < 20; i++)
+    {
+		for(int j=0;j<n;j++)
+		{
+            a[j] = rand() %n;  //随机20个
+		}
+         
+	cout<<"原始数据为：";
+	show(a,n);
+	SelectSort(a,n);
+	cout<<"选择排序：";
+	show(a,n);
+	cout<<endl;
+
+    }
+	end=clock();
+    cout<<"花费时间："<<(double)(end - start)/CLOCKS_PER_SEC<<endl;
+	cout<<endl;
+    cout<<"******************************************"<<endl;
+
+//冒泡排序
+	int *a1=new int[n];	
+	srand((unsigned)time(NULL));//rand产生的随机数每次运行都相同，不同就要用srand（）函数对其初始化
+    clock_t start1,end1;
+	start1=clock();
+	for(int i1 = 0; i1 < 20; i1++)
+    {
+		for(int j1=0;j1<n;j1++)
+		{
+            a[j1] = rand() %n;  //随机20个
+		}
+         
+ 	cout<<"原始数据为：";
+	show(a,n);
+	maopao(a,n);
+	cout<<"冒泡排序：";
+	show(a,n);
+	cout<<endl;
+    }
+	end1=clock();
+    cout<<"花费时间："<<(double)(end1 - start1)/CLOCKS_PER_SEC<<endl;
+	cout<<endl;
+	cout<<"******************************************"<<endl;
+
+//合并排序
+    int *a2=new int[n];	
+	srand((unsigned)time(NULL));//rand产生的随机数每次运行都相同，不同就要用srand（）函数对其初始化
+    clock_t start2,end2;
+	start2=clock();
+	for(int i2 = 0; i2 < 20; i2++)
+    {
+		for(int j2=0;j2<n;j2++)
+		{
+            a[j2] = rand() %n;  //随机20个
+		}
+         
+	cout<<"原始数据为：";
+	show(a,n);
+	hebingsort(a,n);
+	cout<<"合并排序：";
+	show(a,n);
+	cout<<endl;
+    }
+	end1=clock();
+    cout<<"花费时间："<<(double)(end1 - start1)/CLOCKS_PER_SEC<<endl;
+	cout<<endl;
+	cout<<"******************************************"<<endl;
+
+//快速排序
+	int *a3=new int[n];	
+	srand((unsigned)time(NULL));//rand产生的随机数每次运行都相同，不同就要用srand（）函数对其初始化
+    clock_t start3,end3;
+	start3=clock();
+	for(int i3 = 0; i3 < 20; i3++)
+    {
+		for(int j3=0;j3<n;j3++)
+		{
+            a[j3] = rand() %n;  //随机20个
+		}
+         
+	cout<<"原始数据为：";
+	show(a,n);
+	KPai(a,0,n-1);
+	cout<<"快速排序：";
+	show(a,n);
+	cout<<endl;
+    }
+	end3=clock();
+    cout<<"花费时间："<<(double)(end3 - start3)/CLOCKS_PER_SEC<<endl;
+	cout<<endl;
+	cout<<"******************************************"<<endl;
+
+//插入排序
+	int *a4=new int[n];	
+	srand((unsigned)time(NULL));//rand产生的随机数每次运行都相同，不同就要用srand（）函数对其初始化
+    clock_t start4,end4;
+	start4=clock();
+	for(int i4 = 0; i4 < 20; i4++)
+    {
+		for(int j4=0;j4<n;j4++)
+		{
+            a[j4] = rand() %n;  //随机20个
+		}
+         
+	cout<<"原始数据为：";
+	show(a,n);
+	charu(a,n);
+	cout<<"快速排序：";
+	show(a,n);
+	cout<<endl;
+    }
+	end4=clock();
+    cout<<"花费时间："<<(double)(end4 - start4)/CLOCKS_PER_SEC<<endl;
+	cout<<endl;
+	cout<<"******************************************"<<endl;
+
+	return 0;
+}

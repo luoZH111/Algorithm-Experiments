@@ -1,0 +1,442 @@
+#include <iostream>
+#include <random>
+#include <map>
+#include <ctime>
+
+using namespace std;
+int ROW,COL,kind,max_x,max_score;
+//int expect_score[9]={18,15,12,9,5,3,2,0,0};//0 1 2 ...层还能得到的分数
+int expect_score[9]={22,16,12,9,6,4,3,2,2};//0 1 2 ...层还能得到的分数
+//int expect_score[9]={27,16,11,7,4,2,1,0,0};//11 0 1 2 ...层还能得到的分数
+string max_str;
+bool accel=true;
+void DFS(string pre_key);
+struct state{
+    int score;//当前得分
+    int x;//当前步数
+    int i,j;//当前可交换的节点
+    string pre;//上一个状态
+    int dir;
+};
+map<string,state> state_map;
+
+//仅判断位置上能否交换 而不判断是否得分
+bool is_exchange(string pre_key,int i,int j,int dir){
+    //dir==3 right dir==1 down
+    if(dir==3 && j+1<COL && pre_key[i*COL+j]!='0' && pre_key[i*COL+j+1]!='0'
+       &&pre_key[i*COL+j]!=pre_key[i*COL+j+1]){
+        return true;
+    }
+    if(dir==1 && i+1<ROW && pre_key[i*COL+j]!='0' && pre_key[(i+1)*COL+j]!='0'
+       &&pre_key[i*COL+j]!=pre_key[(i+1)*COL+j]){
+        return true;
+    }
+    return false;
+}
+int each_score(int cnt){
+    if(cnt==3){
+        return 1;
+    }else if(cnt==4){
+        return 4;
+    }else if(cnt==5){
+        return 10;
+    }else{
+        return 0;
+    }
+}
+void show(string now_key){
+    for(int i=0;i<ROW;i++){
+        for(int j=0;j<COL;j++){
+            cout<<now_key[i*COL+j]<<" ";
+        }
+        cout<<endl;
+    }
+}
+int is_score(string& now_key,int i0,int j0){
+    int cnt=1;
+    int score1=0;
+    int score2=0;
+    //cout<<&now_key1<<" "<<&now_key<<endl;
+    //show(now_key);
+    //cout<<endl<<endl;
+    char type=now_key[i0*COL+j0];
+    //判断行
+    int i=i0-1;
+    while(i>=0){
+        if(now_key[i*COL+j0]==type){
+            cnt++;
+            i--;
+        }else{
+            break;
+        }
+    }
+    i=i0+1;
+    while(i<ROW){
+        if(now_key[i*COL+j0]==type){
+            cnt++;
+            i++;
+        }else{
+            break;
+        }
+    }
+
+    if(cnt>2){
+        score1=each_score(cnt);
+        now_key[i0*COL+j0]='0';
+        i=i0-1;
+        while(i>=0 && now_key[i*COL+j0]==type){
+            now_key[i*COL+j0]='0';
+            i--;
+        }
+        i=i0+1;
+        while(i<ROW && now_key[i*COL+j0]==type){
+            now_key[i*COL+j0]='0';
+            i++;
+        }
+    }
+    //判断列
+    cnt=1;//很重要
+    int j=j0-1;
+    while(j>=0){
+        if(now_key[i0*COL+j]==type){
+            cnt++;
+            j--;
+        }else{
+            break;
+        }
+    }
+    j=j0+1;
+    while(j<COL){
+        if(now_key[i0*COL+j]==type){
+            cnt++;
+            j++;
+        }else{
+            break;
+        }
+    }
+
+    if(cnt>2){
+        score2=each_score(cnt);
+        now_key[i0*COL+j0]='0';
+        j=j0-1;
+        while(j>=0 && now_key[i0*COL+j]==type){
+            now_key[i0*COL+j]='0';
+            j--;
+        }
+        j=j0+1;
+        while(j<COL && now_key[i0*COL+j]==type){
+            now_key[i0*COL+j]='0';
+            j++;
+        }
+    }
+    int score;
+    score=score1+score2;
+    return score;
+}
+void fall_down(string& now_key){
+    for(int i=1;i<ROW;i++){
+        for(int j=0;j<COL;j++){
+            if(now_key[i*COL+j]=='0'){
+                int k=i;
+                while(k>0){
+                    swap(now_key[k*COL+j],now_key[(k-1)*COL+j]);
+                    k--;
+                }
+            }
+        }
+    }
+}
+int loop_bomb(string& now_key){
+    int score=0;
+    for(int i=0;i<ROW;i++){
+        for(int j=0;j<COL;j++){
+            if(now_key[i*COL+j]!='0'){
+                score=is_score(now_key,i,j);
+                if(score>0){
+                    fall_down(now_key);
+                    return score;
+                }
+            }
+        }
+    }
+    return 0;
+}
+void bomb(string pre_key,int i0,int j0,int dir){
+    state pre_state=state_map[pre_key];
+    state now_state;
+    now_state.pre=pre_key;
+    now_state.x=pre_state.x+1;
+    now_state.score=pre_state.score;
+    now_state.i=i0;
+    now_state.j=j0;
+    now_state.dir=dir;
+    if(now_state.x>max_x){
+        return;//递归结束条件
+    }
+    string now_key=pre_key;
+    int j1=j0;
+    int i1=i0;
+    if(dir==3){
+        j1=j0+1;
+        swap(now_key[i0*COL+j0],now_key[i1*COL+j1]);
+    }
+    if(dir==1){
+        i1=i0+1;
+        swap(now_key[i0*COL+j0],now_key[i1*COL+j1]);
+    }
+    int score1=is_score(now_key,i0,j0);//主动交换的得分
+    int score2=is_score(now_key,i1,j1);//被动交换的得分
+    int score=score1+score2;
+    if(score>0){
+        //成功得分 如果不成功得分则不进行任何操作
+        //更新地图 掉落的方块 连环炸
+        fall_down(now_key);
+        int temp=loop_bomb(now_key);
+        while(temp>0){
+            score+=temp;
+            temp=loop_bomb(now_key);
+        }
+        now_state.score=now_state.score+score;
+        if(max_score<now_state.score){
+            max_str=now_key;
+            max_score=now_state.score;
+        }
+
+        if(accel==true){
+            if(now_state.score+expect_score[now_state.x]>max_score){
+                state_map[now_key]=now_state;
+                DFS(now_key);
+            }
+        }else{
+            if(state_map.count(now_key)==0){
+                state_map[now_key]=now_state;
+                DFS(now_key);
+            }else if(state_map[now_key].score<now_state.score){
+                //剪枝 如果这个状态的分数并没有之前这个状态下的分数高 那么就不剪枝
+                state_map[now_key]=now_state;
+                DFS(now_key);
+            }
+        }
+        /*else if(state_map[now_key].score<now_state.score){
+            //剪枝 如果这个状态的分数并没有之前这个状态下的分数高 那么就不剪枝
+            state_map[now_key]=now_state;
+            DFS(now_key);
+        }*/
+
+        //不剪枝
+        /*else{
+            state_map[now_key]=now_state;
+            DFS(now_key);
+        }*/
+
+    }
+}
+void DFS(string pre_key){
+    if(state_map[pre_key].x>=max_x){
+        return;
+    }
+    for(int i=0;i<ROW;i++){
+        for(int j=0;j<COL;j++){
+            if(is_exchange(pre_key,i,j,3)){
+                bomb(pre_key,i,j,3);//尝试进行爆破
+            }
+            if(is_exchange(pre_key,i,j,1)){
+                bomb(pre_key,i,j,1);
+            }
+        }
+    }
+}
+
+
+
+void ok_key(string& key){
+    bool flag=false;
+    for(int i=0;i<ROW;i++){
+        for(int j=0;j<COL;j++){
+            //行
+            int k=i+1;
+            int cnt=1;
+            char type=key[i*COL+j];
+            while(k<ROW){
+                if(flag){
+                    flag=false;
+                    break;
+                }
+                if(key[k*COL+j]==type){
+                    cnt++;
+                    if(cnt>=3){
+                        while(1){
+                            key[k*COL+j]=rand()%kind+1+'0';
+                            if(key[k*COL+j]==type){
+                                key[k*COL+j]=rand()%kind+1+'0';
+                            }else{
+                                //cout<<"i:"<<k<<" j:"<<j<<" "<<type<<" "<<key[k*COL+j]<<endl;
+                                flag=true;
+                                break;
+                            }
+                        }
+                    }
+                    k++;
+                }else{
+                    break;
+                }
+            }
+            k=i-1;
+            while(k>=0){
+                if(flag){
+                    flag=false;
+                    break;
+                }
+                if(key[k*COL+j]==type){
+                    cnt++;
+                    if(cnt>=3){
+                        while(1){
+                            key[k*COL+j]=rand()%kind+1+'0';
+                            if(key[k*COL+j]==type){
+                                key[k*COL+j]=rand()%kind+1+'0';
+                            }else{
+                                //cout<<"i:"<<k<<" j:"<<j<<" "<<type<<" "<<key[k*COL+j]<<endl;
+                                flag=true;
+                                break;
+                            }
+                        }
+                    }
+                    k--;
+                }else{
+                    break;
+                }
+            }
+
+            //列
+            cnt=1;
+            k=j+1;
+            while(k<COL){
+                if(flag){
+                    flag=false;
+                    break;
+                }
+                if(key[i*COL+k]==type){
+                    cnt++;
+                    if(cnt>=3){
+                        while(1){
+                            key[i*COL+k]=rand()%kind+1+'0';
+                            if(key[i*COL+k]==type){
+                                key[i*COL+k]=rand()%kind+1+'0';
+                            }else{
+                                //cout<<"i:"<<i<<" j:"<<k<<" "<<type<<" "<<key[i*COL+k]<<endl;
+                                flag=true;
+                                break;
+                            }
+                        }
+                    }
+                    k++;
+                }else{
+                    break;
+                }
+            }
+            k=i-1;
+            while(k>=0){
+                if(flag){
+                    flag=false;
+                    break;
+                }
+                if(key[i*COL+k]==type){
+                    cnt++;
+                    if(cnt>=3){
+                        while(1){
+                            key[i*COL+k]=rand()%kind+1+'0';
+                            if(key[i*COL+k]==type){
+                                key[i*COL+k]=rand()%kind+1+'0';
+                            }else{
+                                //cout<<"i:"<<i<<" j:"<<k<<" "<<type<<" "<<key[i*COL+k]<<endl;
+                                flag=true;
+                                break;
+                            }
+                        }
+                    }
+                    k--;
+                }else{
+                    break;
+                }
+            }
+        }
+    }
+}
+
+
+string generate_key(int times){
+    /*cout<<"请输入棋盘的行数M:";
+    cin>>ROW;
+    cout<<"请输入棋盘的列数N:";
+    cin>>COL;
+    cout<<"请输入对象种类数K:";
+    cin>>kind;
+    cout<<"请输入最大步数X:";
+    cin>>max_x;*/
+    srand(times);
+    string init_key="";
+    for(int i=0;i<ROW;i++){
+        for(int j=0;j<COL;j++){
+            init_key.insert(init_key.begin()+i*COL+j,(rand()%kind+1+'0'));
+        }
+    }
+    ok_key(init_key);
+    //show(init_key);
+    return init_key;
+}
+int main()
+{
+	max_x = 10;
+	ROW=8;
+	COL=4;
+	kind=4;
+	int times=100;
+	clock_t sum_accel=0;
+	int score_accel=0;
+	clock_t sum_not_accel=0;
+	int score_not_accel=0;
+	while(times--){
+        state state0;
+        state0.pre="";
+        state0.i=-1;
+        state0.j=-1;
+        state0.dir=-1;
+        state0.x=0;
+        state0.score=0;
+        max_score = 0;                //初始化最大得分
+        max_str="";
+        string init_key="33433233243413433311343314431232";
+        //string init_key=generate_key(times);
+        string init_key1=init_key;
+        state_map[init_key]=state0;
+        clock_t start = clock();
+        accel=false;
+        DFS(init_key);
+        clock_t end1 = clock();
+        sum_not_accel+=(end1-start);
+        score_not_accel+=max_score;
+        cout<<"第"<<times<<"次不剪枝:"<<max_score<<"分   "<<(end1-start)<<"ms"<<endl;
+
+
+        state_map.clear();
+        state0.pre="";
+        state0.i=-1;
+        state0.j=-1;
+        state0.dir=-1;
+        state0.x=0;
+        state0.score=0;
+        max_score = 0;                //初始化最大得分
+        max_str="";
+        state_map[init_key1]=state0;
+        start = clock();
+        accel=true;
+        DFS(init_key1);
+        end1 = clock();
+        sum_accel+=(end1-start);
+        score_accel+=max_score;
+        cout<<"第"<<times<<"次剪枝:"<<max_score<<"分   "<<(end1-start)<<"ms"<<endl<<endl;
+	}
+    cout<<"不剪枝:"<<score_not_accel/100<<"分   "<<sum_not_accel/100<<"ms"<<endl;
+    cout<<"剪枝:"<<score_accel/100<<"分   "<<sum_accel/100<<"ms"<<endl;
+    return 0;
+}
